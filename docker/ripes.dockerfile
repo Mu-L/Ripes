@@ -1,6 +1,7 @@
-FROM debian:bookworm-backports
+FROM ubuntu
 
 ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update -q \
     && apt-get install -qy --no-install-recommends \
     build-essential \
@@ -8,12 +9,16 @@ RUN apt-get update -q \
     gcc-riscv64-unknown-elf \
     git \
     libpthread-stubs0-dev \
-    libqt5charts5-dev \
-    libqt5svg5-dev \
     python3 \
+    python3-pip \
     && apt-get -y autoremove \
     && apt-get -y autoclean \
     && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install aqtinstall
+
+# from https://ddalcino.github.io/aqt-list-server/
+RUN aqt install-qt linux desktop 6.5.0 gcc_64 -m qtcharts
 
 ARG GIT_SSL_NO_VERIFY=true
 ENV LC_ALL=C.UTF-8 SHELL=/bin/bash
